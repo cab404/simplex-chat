@@ -480,11 +480,11 @@ fun WebRTCView(callCommand: SnapshotStateList<WCallCommand>, onResponse: (WVAPIM
       webView.value = null
     }
   }
-  LaunchedEffect(callCommand.firstOrNull(), webView.value) {
-    val wv = webView.value
-    if (wv != null) {
-      val cmd = callCommand.removeFirstOrNull()
-      if (cmd != null) {
+  val wv = webView.value
+  if (wv != null) {
+    LaunchedEffect(callCommand.firstOrNull()) {
+      while (callCommand.isNotEmpty()) {
+        val cmd = callCommand.removeFirst()
         Log.d(TAG, "WebRTCView LaunchedEffect executing $cmd")
         processCommand(wv, cmd)
       }
@@ -550,7 +550,7 @@ class WebRTCInterface(private val onResponse: (WVAPIMessage) -> Unit) {
       // for debugging
       // onResponse(message)
       onResponse(json.decodeFromString(message))
-    } catch (e: Error) {
+    } catch (e: Exception) {
       Log.e(TAG, "failed parsing WebView message: $message")
     }
   }

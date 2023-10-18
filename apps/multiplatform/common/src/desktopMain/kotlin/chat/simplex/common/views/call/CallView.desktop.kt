@@ -203,8 +203,8 @@ fun WebRTCController(callCommand: SnapshotStateList<WCallCommand>, onResponse: (
     while (connections.isEmpty()) {
       delay(100)
     }
-    val cmd = callCommand.removeFirstOrNull()
-    if (cmd != null) {
+    while (callCommand.isNotEmpty()) {
+      val cmd = callCommand.removeFirst()
       Log.d(TAG, "WebRTCController LaunchedEffect executing $cmd")
       processCommand(cmd)
     }
